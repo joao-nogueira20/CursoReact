@@ -74,7 +74,6 @@ const App = () => {
       {all === 0 
   ? <p>No feedback given</p> 
   : (
-      <>
       <table>
         <tbody>
           <StatisticLine text="Good" value ={good}></StatisticLine>
@@ -85,8 +84,7 @@ const App = () => {
         </tbody>
         
       </table>
-        
-      </>
+
     )
 }
     </div>
