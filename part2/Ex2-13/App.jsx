@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import axios from 'axios'
 import { useEffect } from 'react'
+import personService from '../introdemo/services/persons'
 
 const Filter = (props) => {
  
@@ -40,9 +40,9 @@ const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService.getAll()
+      .then(initialPersons  => {
+        setPersons(initialPersons)
       })
   }, [])
   
@@ -75,10 +75,9 @@ const App = () => {
     if(persons.some(person => person.name === newName)){
       alert(newName + ' is already added to phonebook');
     } else {
-      axios
-    .post('http://localhost:3001/persons', newPerson)
-    .then(response => {
-      setPersons(persons.concat(response.data))
+      personService.create(newPerson)
+    .then(returnedPerson  => {
+      setPersons(persons.concat(returnedPerson ))
     })
     }
     
