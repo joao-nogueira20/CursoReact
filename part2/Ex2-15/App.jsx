@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import personService from './services/persons'
+import personService from '../../introdemo/src/services/persons'
 
 const Filter = (props) => {
  

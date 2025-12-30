@@ -35,7 +35,17 @@ const Persons = (props) => {
 }
 
 
-const Notification = ({ message }) => {
+const Notification = ({ message,type }) => {
+  let classStyle = ''
+  switch(type){
+    case 'successful': 
+    classStyle = 'message-successful'
+    break;
+
+    case 'error':
+    classStyle = 'message-error'
+    break;
+  }
 
 
   if (message === null) {
@@ -43,7 +53,7 @@ const Notification = ({ message }) => {
   }
 
   return (
-    <div className='message'>
+    <div className= {classStyle}>
       {message}
     </div>
   )
@@ -66,6 +76,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [message, setMessage] = useState(null)
+  const [type, setType] = useState(null)
 
   const handleFilter = (event) => {
     setFilter(event.target.value);
@@ -110,6 +121,7 @@ const App = () => {
           setPersons(persons.map(p =>
             p.id === returnedPerson.id ? returnedPerson : p ));
             setMessage('Updated ' + returnedPerson.name)
+            setType('successful')
 
             setTimeout(() => {
               setMessage(null)
@@ -117,12 +129,30 @@ const App = () => {
           
           
           })
+          .catch(error => {
+            setPersons(persons.filter(p => p.id !== personAlreadyAdded.id));
+
+            setMessage('Information of ' + personAlreadyAdded.name + ' has already been removed from server')
+            setType('error')
+
+
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
       }
 
  
     } else {
       personService.create(newPerson)
     .then(returnedPerson  => {
+      setMessage('Added ' + returnedPerson.name)
+      setType('successful')
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+
       setPersons(persons.concat(returnedPerson ))
     })
     }
@@ -134,7 +164,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message ={message}></Notification>
+      <Notification message ={message} type = {type}></Notification>
 
       <Filter filterValue={filter} handleFilter= {handleFilter}></Filter>
 
