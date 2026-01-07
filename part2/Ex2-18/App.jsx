@@ -6,7 +6,7 @@ const CountryInfo = (props) => {
 
     return (
         <div>
-            <h1>{props.name.common}</h1>
+            <h1>{props.name}</h1>
 
             <p>Capital {props.capital}</p>
             <p>Area {props.area}</p>
@@ -40,6 +40,34 @@ const FormSearch = (props) => {
     )
 }
 
+const CountriesToShow = (props) => {
+  if(props.search === ''){
+    return null
+  }
+
+    const countriesToShow = props.countries.filter(country => country.name.common.toLowerCase().includes(props.search.toLowerCase()))
+
+    if(countriesToShow.length > 10){
+        return <p>Too many matches, specify another filter</p>
+    }
+    else if ( 1 < countriesToShow.length && countriesToShow.length <= 10){
+        return (
+        <div>
+        {countriesToShow.map(country =>
+          <div key ={country.name.common}> {country.name.common}</div>
+        )}
+      </div>)
+    }
+    else if(countriesToShow.length === 1){
+        return(
+            <CountryInfo name ={countriesToShow[0].name.common} capital ={countriesToShow[0].capital} area={countriesToShow[0].area} languages={countriesToShow[0].languages} flags={countriesToShow[0].flags}></CountryInfo>
+        )
+    }
+    else {
+        return null
+    }
+}
+
 const App = () => {
     const [countries, setCountries] = useState([])
     const [search, setSearch] = useState('')
@@ -55,7 +83,7 @@ const App = () => {
         
     }, [])
 
-   // const countriesToShow = countries.filter(...)
+    
 
 
     const handleChange = (event) => {
@@ -63,8 +91,13 @@ const App = () => {
     }
 
     return (
-        <FormSearch value = {search} handleChange = {handleChange}></FormSearch>
+        <div>
+            <FormSearch value = {search} handleChange = {handleChange}></FormSearch>
+            <CountriesToShow countries = {countries} search ={search}></CountriesToShow>
+        </div>
     )
 
        
 }
+
+export default App
