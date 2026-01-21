@@ -1,7 +1,14 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
+
 
 app.use(express.json())
+
+
+morgan.token('content', function (req, res) { return JSON.stringify(req.body)})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 
 let persons = [
@@ -62,6 +69,17 @@ app.get('/api/persons/:id', (request, response) => {
     
     const person = request.body
     person.id = String(randomId)
+
+    if(!person.name || !person.number){
+      return response.status(400).json({
+        error: 'content missing'
+      })
+    }
+    if( persons.find(p => p.name === person.name)){
+      return response.status(400).json({
+        error: 'name must be unique'
+      })
+    }
 
     persons = persons.concat(person)
     
